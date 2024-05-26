@@ -3,10 +3,13 @@ package com.example.santevistabackendpfe.controllers;
 import com.example.santevistabackendpfe.presistence.entity.*;
 import com.example.santevistabackendpfe.presistence.repository.InfirmierKineRepository;
 import com.example.santevistabackendpfe.presistence.repository.UserRepository;
+import com.example.santevistabackendpfe.services.Interfaces.IPatientService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,7 +21,8 @@ import java.util.List;
 @PreAuthorize("hasAuthority('MEDECINSENIOR')")
 public class MedecinSeniorController {
     private final UserRepository userRepository;
-
+    @Autowired
+    IPatientService ips;
 
 
     @GetMapping("/MedecinsSeniors")
@@ -54,6 +58,17 @@ public class MedecinSeniorController {
         List<UserEntity> users3 = userRepository.findAll();
         users3 = users3.stream().filter(InfirmierSoignant.class::isInstance).toList();
         return ResponseEntity.ok(users3);
+    }
+//*****************************les methodes des Patients***************************************
+    @GetMapping("/all")
+    public List<Patient> getall(){
+        return ips.getAllPatients();
+    }
+    @GetMapping("/{id}")
+
+    public Patient getparid(@PathVariable String id){
+
+        return ips.getPatientById(id);
     }
 
 }
