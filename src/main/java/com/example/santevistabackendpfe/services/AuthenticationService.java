@@ -26,20 +26,132 @@ public class AuthenticationService {
     private final JWTService jwtService;
 
 
-    public LoginResponse login(LoginRequest loginRequest) {
-        Optional<UserEntity> optionalUserEntity = userRepository.findByUsername(loginRequest.username());
-        if(optionalUserEntity.isEmpty()){
-            throw new ApplicationException("User not found with username: " + loginRequest.username());
-        }
-        UserEntity userEntity = optionalUserEntity.get();
-        boolean PasswordMatches = passwordEncoder.matches(loginRequest.password(), userEntity.getPassword());
-        if(!PasswordMatches){
-            throw new ApplicationException("Invalid password");
-        }
-        String generatedToken = jwtService.generateToken(userEntity.getUsername());
-        ApplicationUtils.setHeaderValue(HttpHeaders.AUTHORIZATION, generatedToken);
-        return new LoginResponse(userEntity.getEmail(), userEntity.getGender(), userEntity.getRole().name());
+public LoginResponse login(LoginRequest loginRequest) {
+    Optional<UserEntity> optionalUserEntity = userRepository.findByUsername(loginRequest.username());
+    if(optionalUserEntity.isEmpty()){
+        throw new ApplicationException("User not found with email: " + loginRequest.username());
     }
+    UserEntity userEntity = optionalUserEntity.get();
+    boolean PasswordMatches = passwordEncoder.matches(loginRequest.password(), userEntity.getPassword());
+    if(!PasswordMatches){
+        throw new ApplicationException("Invalid password");
+    }
+    String generatedToken = jwtService.generateToken(userEntity.getUsername());
+    ApplicationUtils.setHeaderValue(HttpHeaders.AUTHORIZATION, generatedToken);
+    return new LoginResponse(userEntity.getEmail(), userEntity.getRole().name(),generatedToken);
+}
+
+
+//    public void register(RegisterRequest registerRequest) {
+//        Optional<UserEntity> existingUser = userRepository.findByEmail(registerRequest.email());
+//        if (existingUser.isPresent()) {
+//            throw new ApplicationException("User with email " + registerRequest.email() + " already exists");
+//        }
+//
+//        UserEntity user = new UserEntity();
+//        user.setUsername(registerRequest.username());
+//        user.setGender(registerRequest.gender());
+//        user.setAddress(registerRequest.address());
+//        user.setMobile(registerRequest.mobile());
+//        user.setPassword(passwordEncoder.encode(registerRequest.password()));
+//        user.setEmail(registerRequest.email());
+//        switch (registerRequest.role()) {
+//            case UserEntity:
+//                user.setRole(SECRETAIRE);
+//                userRepository.save(user);
+//                break;
+//
+//            case MEDECINJEUNE:
+//                MedecinJeune medecinJeune = new MedecinJeune();
+//                medecinJeune.setUsername(registerRequest.username());
+//                medecinJeune.setGender(registerRequest.gender());
+//                medecinJeune.setAddress(registerRequest.address());
+//                medecinJeune.setMobile(registerRequest.mobile());
+//                medecinJeune.setPassword(passwordEncoder.encode(registerRequest.password()));
+//                medecinJeune.setEmail(registerRequest.email());
+//                medecinJeune.setRole(MEDECINJEUNE);
+//                medecinJeune.setMedecinJeuneCardNumber(registerRequest.MedecinJeuneCardNumber());
+//                userRepository.save(medecinJeune);
+//                break;
+//
+//            case MEDECINSENIOR:
+//                MedecinSenior medecinSenior = new MedecinSenior();
+//                medecinSenior.setUsername(registerRequest.username());
+//                medecinSenior.setGender(registerRequest.gender());
+//                medecinSenior.setAddress(registerRequest.address());
+//                medecinSenior.setMobile(registerRequest.mobile());
+//                medecinSenior.setPassword(passwordEncoder.encode(registerRequest.password()));
+//                medecinSenior.setEmail(registerRequest.email());
+//                medecinSenior.setRole(MEDECINSENIOR);
+//                userRepository.save(medecinSenior);
+//                break;
+//
+//
+//            case INFIRMIERKINE:
+//                InfirmierKine infirmierKine = new InfirmierKine();
+//                infirmierKine.setUsername(registerRequest.username());
+//                infirmierKine.setGender(registerRequest.gender());
+//                infirmierKine.setAddress(registerRequest.address());
+//                infirmierKine.setMobile(registerRequest.mobile());
+//                infirmierKine.setRole(INFIRMIERKINE);
+//                infirmierKine.setPassword(passwordEncoder.encode(registerRequest.password()));
+//                infirmierKine.setEmail(registerRequest.email());
+//                infirmierKine.setInfirmierKineCardNumber(registerRequest.InfirmierKineCardNumber());
+//                userRepository.save(infirmierKine);
+//                break;
+//
+//
+//            case INFIRMIERSOIGNANT:
+//                InfirmierSoignant infirmierSoignant = new InfirmierSoignant();
+//                infirmierSoignant.setUsername(registerRequest.username());
+//                infirmierSoignant.setGender(registerRequest.gender());
+//                infirmierSoignant.setAddress(registerRequest.address());
+//                infirmierSoignant.setMobile(registerRequest.mobile());
+//                infirmierSoignant.setRole(INFIRMIERSOIGNANT);
+//                infirmierSoignant.setPassword(passwordEncoder.encode(registerRequest.password()));
+//                infirmierSoignant.setEmail(registerRequest.email());
+//                infirmierSoignant.setInfirmierSoignantCardNumber(registerRequest.InfirmierSoignantCardNumber());
+//                userRepository.save(infirmierSoignant);
+//                break;
+//
+//
+//            case INFIRMIERSURVEILLANT:
+//                InfirmierSurveillant infirmierSurveillant = new InfirmierSurveillant();
+//                infirmierSurveillant.setUsername(registerRequest.username());
+//                infirmierSurveillant.setGender(registerRequest.gender());
+//                infirmierSurveillant.setAddress(registerRequest.address());
+//                infirmierSurveillant.setMobile(registerRequest.mobile());
+//                infirmierSurveillant.setRole(INFIRMIERSURVEILLANT);
+//                infirmierSurveillant.setPassword(passwordEncoder.encode(registerRequest.password()));
+//                infirmierSurveillant.setEmail(registerRequest.email());
+//                infirmierSurveillant.setInfirmierSurveillantCardNumber(registerRequest.InfirmierSurveillantCardNumber());
+//                userRepository.save(infirmierSurveillant);
+//                break;
+//
+//
+//            case SECRETAIRE:
+//                Secretaire secretaire = new Secretaire();
+//                secretaire.setUsername(registerRequest.username());
+//                secretaire.setGender(registerRequest.gender());
+//                secretaire.setAddress(registerRequest.address());
+//                secretaire.setMobile(registerRequest.mobile());
+//                secretaire.setRole(SECRETAIRE);
+//                secretaire.setPassword(passwordEncoder.encode(registerRequest.password()));
+//                secretaire.setEmail(registerRequest.email());
+//                secretaire.setSecretaireCardNumber(registerRequest.SecretaireCardNumber());
+//                userRepository.save(secretaire);
+//                break;
+//            default:
+//                throw new ApplicationException("Invalid role specified");
+//
+//
+//        }
+//
+//
+//
+//
+//
+//    }
 
 
     public void register(RegisterRequest registerRequest) {
@@ -47,108 +159,40 @@ public class AuthenticationService {
         if (existingUser.isPresent()) {
             throw new ApplicationException("User with email " + registerRequest.email() + " already exists");
         }
-
-        UserEntity user = new UserEntity();
-        user.setUsername(registerRequest.username());
-        user.setGender(registerRequest.gender());
-        user.setAddress(registerRequest.address());
-        user.setMobile(registerRequest.mobile());
-        user.setPassword(passwordEncoder.encode(registerRequest.password()));
-        user.setEmail(registerRequest.email());
+        UserEntity user;
         switch (registerRequest.role()) {
-            case UserEntity:
-                user.setRole(SECRETAIRE);
-                userRepository.save(user);
-                break;
-
-            case MEDECINJEUNE:
-                MedecinJeune medecinJeune = new MedecinJeune();
-                medecinJeune.setUsername(registerRequest.username());
-                medecinJeune.setGender(registerRequest.gender());
-                medecinJeune.setAddress(registerRequest.address());
-                medecinJeune.setMobile(registerRequest.mobile());
-                medecinJeune.setPassword(passwordEncoder.encode(registerRequest.password()));
-                medecinJeune.setEmail(registerRequest.email());
-                medecinJeune.setRole(MEDECINJEUNE);
-                medecinJeune.setMedecinJeuneCardNumber(registerRequest.MedecinJeuneCardNumber());
-                userRepository.save(medecinJeune);
-                break;
-
-            case MEDECINSENIOR:
-                MedecinSenior medecinSenior = new MedecinSenior();
-                medecinSenior.setUsername(registerRequest.username());
-                medecinSenior.setGender(registerRequest.gender());
-                medecinSenior.setAddress(registerRequest.address());
-                medecinSenior.setMobile(registerRequest.mobile());
-                medecinSenior.setPassword(passwordEncoder.encode(registerRequest.password()));
-                medecinSenior.setEmail(registerRequest.email());
-                medecinSenior.setRole(MEDECINSENIOR);
-                userRepository.save(medecinSenior);
-                break;
-
-
-            case INFIRMIERKINE:
-                InfirmierKine infirmierKine = new InfirmierKine();
-                infirmierKine.setUsername(registerRequest.username());
-                infirmierKine.setGender(registerRequest.gender());
-                infirmierKine.setAddress(registerRequest.address());
-                infirmierKine.setMobile(registerRequest.mobile());
-                infirmierKine.setRole(INFIRMIERKINE);
-                infirmierKine.setPassword(passwordEncoder.encode(registerRequest.password()));
-                infirmierKine.setEmail(registerRequest.email());
-                infirmierKine.setInfirmierKineCardNumber(registerRequest.InfirmierKineCardNumber());
-                userRepository.save(infirmierKine);
-                break;
-
-
-            case INFIRMIERSOIGNANT:
-                InfirmierSoignant infirmierSoignant = new InfirmierSoignant();
-                infirmierSoignant.setUsername(registerRequest.username());
-                infirmierSoignant.setGender(registerRequest.gender());
-                infirmierSoignant.setAddress(registerRequest.address());
-                infirmierSoignant.setMobile(registerRequest.mobile());
-                infirmierSoignant.setRole(INFIRMIERSOIGNANT);
-                infirmierSoignant.setPassword(passwordEncoder.encode(registerRequest.password()));
-                infirmierSoignant.setEmail(registerRequest.email());
-                infirmierSoignant.setInfirmierSoignantCardNumber(registerRequest.InfirmierSoignantCardNumber());
-                userRepository.save(infirmierSoignant);
-                break;
-
-
-            case INFIRMIERSURVEILLANT:
-                InfirmierSurveillant infirmierSurveillant = new InfirmierSurveillant();
-                infirmierSurveillant.setUsername(registerRequest.username());
-                infirmierSurveillant.setGender(registerRequest.gender());
-                infirmierSurveillant.setAddress(registerRequest.address());
-                infirmierSurveillant.setMobile(registerRequest.mobile());
-                infirmierSurveillant.setRole(INFIRMIERSURVEILLANT);
-                infirmierSurveillant.setPassword(passwordEncoder.encode(registerRequest.password()));
-                infirmierSurveillant.setEmail(registerRequest.email());
-                infirmierSurveillant.setInfirmierSurveillantCardNumber(registerRequest.InfirmierSurveillantCardNumber());
-                userRepository.save(infirmierSurveillant);
-                break;
-
-
-            case SECRETAIRE:
-                Secretaire secretaire = new Secretaire();
-                secretaire.setUsername(registerRequest.username());
-                secretaire.setGender(registerRequest.gender());
-                secretaire.setAddress(registerRequest.address());
-                secretaire.setMobile(registerRequest.mobile());
-                secretaire.setRole(SECRETAIRE);
-                secretaire.setPassword(passwordEncoder.encode(registerRequest.password()));
-                secretaire.setEmail(registerRequest.email());
-                secretaire.setSecretaireCardNumber(registerRequest.SecretaireCardNumber());
-                userRepository.save(secretaire);
-                break;
-            default:
-                throw new ApplicationException("Invalid role specified");
-
-
+            case MEDECINSENIOR -> user = new MedecinSenior();
+            case MEDECINJEUNE -> user = new MedecinJeune();
+            case INFIRMIERKINE -> user = new InfirmierKine();
+            case INFIRMIERSOIGNANT -> user = new InfirmierSoignant();
+            case INFIRMIERSURVEILLANT -> user = new InfirmierSurveillant();
+            case SECRETAIRE -> user = new Secretaire();
+            default -> throw new ApplicationException("Invalid role specified");
         }
 
+        user.setUsername(registerRequest.username());
+        user.setPassword(passwordEncoder.encode(registerRequest.password()));
+        user.setEmail(registerRequest.email());
+        user.setMobile(registerRequest.mobile());
+        user.setAddress(registerRequest.address());
+        user.setGender(registerRequest.gender());
+        user.setRole(registerRequest.role());
+        if (user instanceof MedecinJeune medecinJeune) {
+            medecinJeune.setMedecinJeuneCardNumber(registerRequest.MedecinJeuneCardNumber());
+        } else if (user instanceof InfirmierKine infirmierKine) {
+            infirmierKine.setInfirmierKineCardNumber(registerRequest.InfirmierKineCardNumber());
 
+        } else if ( user instanceof InfirmierSoignant infirmierSoignant) {
+            infirmierSoignant.setInfirmierSoignantCardNumber(registerRequest.InfirmierSoignantCardNumber());
 
+        } else if ( user instanceof InfirmierSurveillant infirmierSurveillant){
+            infirmierSurveillant.setInfirmierSurveillantCardNumber(registerRequest.InfirmierSurveillantCardNumber());
+
+        }else if ( user instanceof Secretaire secretaire){
+            secretaire.setSecretaireCardNumber(registerRequest.SecretaireCardNumber());
+        }
+
+        userRepository.save(user);
 
 
     }
