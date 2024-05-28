@@ -16,20 +16,20 @@ import java.util.Date;
 @Component
 public class JWTService {
     public static final String TOKEN_PREFIX = "Bearer ";
-    public static final String USERNAME_CLAIM = "username";
+    public static final String EMAIL_CLAIM = "email";
     @Value("${jwt.secret:secret}")
     private String secret;
 
     @Value("${jwt.validity:60}")
     private int tokenValidity;
 
-    public String generateToken(String username) {
+    public String generateToken(String email) {
         try {
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.MINUTE, tokenValidity);
             Date expiresAt = calendar.getTime();
             String signedJWT = JWT.create()
-                    .withClaim(USERNAME_CLAIM, username)
+                    .withClaim(EMAIL_CLAIM, email)
                     .withExpiresAt(expiresAt)
                     .sign(Algorithm.HMAC256(secret));
             return TOKEN_PREFIX.concat(signedJWT);
