@@ -12,4 +12,5 @@ public interface IFicheService {
 
     public FicheSurveillance validateFicheSurveillance (FicheSurveillance f, String id);
     void deleteFicheSurveillanceById(String id);
+
 }

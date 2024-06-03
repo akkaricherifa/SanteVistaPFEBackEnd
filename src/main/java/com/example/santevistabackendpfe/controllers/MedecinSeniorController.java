@@ -1,7 +1,6 @@
 package com.example.santevistabackendpfe.controllers;
 
 import com.example.santevistabackendpfe.presistence.entity.*;
-import com.example.santevistabackendpfe.presistence.repository.InfirmierKineRepository;
 import com.example.santevistabackendpfe.presistence.repository.UserRepository;
 import com.example.santevistabackendpfe.services.FicheService;
 import com.example.santevistabackendpfe.services.Interfaces.IFicheService;
@@ -90,7 +89,7 @@ public class MedecinSeniorController {
         }
     }
 
-//    *********************************méthodes des fiches *************************************//
+//    **************************************méthodes des fiches *************************************//
     @GetMapping("/GetAllFiches")
     public List<FicheSurveillance> getallFiches() {
         return ifs.getAllFicheSurveillances();
@@ -116,5 +115,12 @@ public class MedecinSeniorController {
         return ifs.getFicheSurveillanceById(id);
     }
 
+
+    @DeleteMapping("/deleteFiche/{id}")
+    public String deleteFiche(@PathVariable String id) {
+        ifs.deleteFicheSurveillanceById(id);
+        return "la fiche est supprimée avec succes";
+
+    }
 
 }

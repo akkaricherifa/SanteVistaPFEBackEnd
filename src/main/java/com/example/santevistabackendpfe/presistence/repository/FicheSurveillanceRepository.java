@@ -9,5 +9,4 @@ import java.util.List;
 public interface FicheSurveillanceRepository extends MongoRepository<FicheSurveillance, String> {
     Optional<FicheSurveillance> findById(String id);
 
-//    FicheSurveillance findByPatientname(String patientname);
 }

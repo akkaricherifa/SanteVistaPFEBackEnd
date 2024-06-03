@@ -13,7 +13,6 @@ public interface IPatientService {
     public Patient updatePatient(Patient p, String id);
     void deletePatientById(String id);
 
-//    FicheSurveillance getFicheByPatientName(String patientname);
 
     public FicheSurveillance addFicheSurveillance(FicheSurveillance ficheSurveillanceDetails, String patientId);
 

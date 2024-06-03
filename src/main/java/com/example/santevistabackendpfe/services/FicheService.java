@@ -1,10 +1,8 @@
 package com.example.santevistabackendpfe.services;
 
 import com.example.santevistabackendpfe.presistence.entity.FicheSurveillance;
-import com.example.santevistabackendpfe.presistence.entity.Patient;
 import com.example.santevistabackendpfe.presistence.repository.FicheSurveillanceRepository;
 import com.example.santevistabackendpfe.presistence.repository.PatientRepository;
-import com.example.santevistabackendpfe.presistence.repository.UserRepository;
 import com.example.santevistabackendpfe.services.Interfaces.IFicheService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -71,6 +69,5 @@ public class FicheService implements IFicheService {
         fr.deleteById(id);
 
     }
-
 
 }

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static org.springframework.http.ResponseEntity.ok;
+import static org.springframework.web.servlet.function.ServerResponse.status;
 
 @RestController
 @RequiredArgsConstructor
@@ -109,13 +110,6 @@ public class SecretaireController {
         return ResponseEntity.ok(fiche);
 
     }
-
-
-//    @GetMapping("/GetFichebyName/{patientname}")
-//    public FicheSurveillance getFicheByPatientName(@PathVariable String patientname)  {
-//        return PatientService.getFicheByPatientName(patientname);
-//    }
-
 
 
     @GetMapping("/GetAllFiches")
