@@ -3,15 +3,15 @@ package com.example.santevistabackendpfe.controllers;
 import com.example.santevistabackendpfe.presistence.entity.*;
 import com.example.santevistabackendpfe.presistence.repository.InfirmierKineRepository;
 import com.example.santevistabackendpfe.presistence.repository.UserRepository;
+import com.example.santevistabackendpfe.services.FicheService;
+import com.example.santevistabackendpfe.services.Interfaces.IFicheService;
 import com.example.santevistabackendpfe.services.Interfaces.IPatientService;
+import com.example.santevistabackendpfe.services.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,8 +23,14 @@ public class MedecinSeniorController {
     private final UserRepository userRepository;
     @Autowired
     IPatientService ips;
+    @Autowired
+    IFicheService ifs;
+    @Autowired
+    private PatientService patientService;
+    @Autowired
+    private FicheService ficheService;
 
-
+//*********************************** get listes de personnels de santé ************************************
     @GetMapping("/MedecinsSeniors")
     public ResponseEntity<List<UserEntity>> users() {
         List<UserEntity> users = userRepository.findAll();
@@ -59,7 +65,7 @@ public class MedecinSeniorController {
         users3 = users3.stream().filter(InfirmierSoignant.class::isInstance).toList();
         return ResponseEntity.ok(users3);
     }
-//*****************************les methodes des Patients***************************************
+//**********************/*****************les méthodes des Patients***************************************
     @GetMapping("/all")
     public List<Patient> getall(){
         return ips.getAllPatients();
@@ -70,5 +76,45 @@ public class MedecinSeniorController {
 
         return ips.getPatientById(id);
     }
+    @PutMapping("/modifier/{id}")
+    public ResponseEntity<?> modifier(@RequestBody Patient p, @PathVariable String id) {
+        try {
+            Patient updatedPatient = patientService.updatePatient(p, id);
+            return ResponseEntity.ok(updatedPatient);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(404).body("Erreur : Patient non trouvé");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Erreur de modification");
+        }
+    }
+
+//    *********************************méthodes des fiches *************************************//
+    @GetMapping("/GetAllFiches")
+    public List<FicheSurveillance> getallFiches() {
+        return ifs.getAllFicheSurveillances();
+    }
+
+    @PutMapping("/ModifFiche/{id}")
+    public ResponseEntity<?> modifierFiche(@RequestBody FicheSurveillance f, @PathVariable String id) {
+        try {
+            FicheSurveillance updatedFiche = ficheService.updateFicheSurveillance(f, id);
+            return ResponseEntity.ok(updatedFiche);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(404).body("Erreur : Patient non trouvé");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("erreur de modification");
+        }
+    }
+    @GetMapping("/getFiche/{id}")
+
+    public FicheSurveillance getFicheparid(@PathVariable String id) {
+
+        return ifs.getFicheSurveillanceById(id);
+    }
+
 
 }

@@ -8,14 +8,11 @@
         <version>3.2.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-
     <groupId>com.example</groupId>
     <artifactId>SanteVistaBackEndPFE</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-
     <name>SanteVistaBackEndPFE</name>
     <description>SanteVistaBackEndPFE</description>
-
     <properties>
         <java.version>17</java.version>
         <spring-cloud-gcp.version>5.1.2</spring-cloud-gcp.version>
@@ -50,12 +47,10 @@
             <artifactId>java-jwt</artifactId>
             <version>${auth0-jwt.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -67,7 +62,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
@@ -76,5 +70,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
