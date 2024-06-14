@@ -5,9 +5,6 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-
-
 @Getter
 @Setter
 @Document(collection = "FicheSurveillances")
@@ -26,12 +23,113 @@ public class FicheSurveillance {
     private String arf_grade;
     private String kdigo;
     private String weight;
+    private String fibrobronchoscopy;
+    private String tracheostomy;
+    private String echography;
+    private String hemodialysis;
+    private String hemodiafiltration;
+    private String plasma_exchange;
+    private String catheter_dressing;
+    private String tracheostomy_care;
+    private String tracheal_aspiration_microbio;
+    private String blood_culture;
+    private String oropharyngeal_care;
+    private String suctioning;
+    private String positioning;
+    private String pressure_ulcer_risk_score;
+    private String pressure_ulcer_grade;
+    private String early_mobilization;
+    private String physiotherapy_motor;
+    private String physiotherapy_respiratory;
+    private String exit_for_fresh_air;
+    private String family_visit;
+    private String temperature;
+    private String hr;
+    private String sbp;
+    private String dbp;
+    private String map;
+    private String scv02;
+    private String lactates;
+    private String marbling_score;
+    private String app_13pourcent;
+    private String ivc_collapse_18pourcent;
+    private String plr_co;
+    private String apco2_gap;
+    private String o2_l_min;
+    private String hfnc_flow_l_min;
+    private String fio2;
+    private String spo2;
+    private String etco2;
+    private String ori_o2_reserve_index;
+    private String spo2_fio2;
+    private String nippv;
+    private String auto_peep_cmh2o;
+    private String ps_cmh2o;
+    private String peep_cmh2o;
+    private String leaks_pourcent_or_l_min;
+    private String slope_sec;
+    private String exp_tigger;
+    private String vt_ml;
+    private String vt_ml_kgibw;
+    private String rr_c_min;
+    private String ti1_sec;
+    private String flow_curve_shape;
+    private String imv_vc;
+    private String best_peep;
+    private String ibw;
+    private String paco2;
+    private String vt2_ml;
+    private String vt2_ml_kgibw;
+    private String rr;
+    private String flow_l_min;
+    private String ti2_sec;
+    private String i_e;
+    private String peep2_cmh2o;
+    private String peep_total;
+    private String rr_patient;
+    private String ve;
+    private String p_peak;
+    private String p_plat;
+    private String dp;
+    private String c;
+    private String r;
+    private String vr;
+    private String pao2_fio2;
+    private String weaning_attempt;
+    private String training_for_home_ventilation;
+    private String urinary_output;
+    private String dextro;
+    private String insulin;
+    private String intraabdominal_pressure;
+    private String chest_tube;
+    private String nasogastric_tube;
+    private String digestive_tubes;
+    private String cutaneous_water_losses;
+    private String ventilation_water_losses;
+    private String fluid_losses;
+    private String enteral_feeding;
+    private String parenteral_feeding;
+    private String glucose;
+    private String saline;
+    private String na_glucose;
+    private String na_saline;
+    private String na_medications;
+    private String na_total_intake;
+    private String k;
+    private String mg;
+    private String ca;
+    private String p;
+    private String fluid_challenge;
+    private String fluid_intake;
+    private String fluid_balance;
+    private String norepinephrin;
+    private String remifentanyl;
+    private String midazolam;
+    private String propofol;
+    private String cisatracurium;
+    private String medications;
 
     @DBRef
     private Patient patient;
-
-
-
-
 
 }
