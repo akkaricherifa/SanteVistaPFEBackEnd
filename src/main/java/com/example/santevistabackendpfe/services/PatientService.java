@@ -1,11 +1,7 @@
 package com.example.santevistabackendpfe.services;
 
-import com.example.santevistabackendpfe.presistence.entity.FicheSurveillance;
-import com.example.santevistabackendpfe.presistence.entity.Patient;
-import com.example.santevistabackendpfe.presistence.entity.UserEntity;
-import com.example.santevistabackendpfe.presistence.repository.FicheSurveillanceRepository;
-import com.example.santevistabackendpfe.presistence.repository.PatientRepository;
-import com.example.santevistabackendpfe.presistence.repository.UserRepository;
+import com.example.santevistabackendpfe.presistence.entity.*;
+import com.example.santevistabackendpfe.presistence.repository.*;
 import com.example.santevistabackendpfe.services.Interfaces.IPatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +18,10 @@ public class PatientService implements IPatientService {
     PatientRepository pr;
     @Autowired
     FicheSurveillanceRepository fr;
+    @Autowired
+    SoinRepository sr;
+    @Autowired
+    KinesitherapieRepository kr;
     @Autowired
     UserRepository ur;
 
@@ -66,10 +66,8 @@ public class PatientService implements IPatientService {
 
 
     public FicheSurveillance addFicheSurveillance(FicheSurveillance ficheSurveillanceDetails, String patientId) {
-
         Patient patient = pr.findById(patientId)
                 .orElseThrow(() -> new RuntimeException("Patient not found"));
-
         ficheSurveillanceDetails.setPatient(patient);
         ficheSurveillanceDetails.setFillTime(LocalDateTime.now());
         FicheSurveillance savedFicheSurveillance = fr.save(ficheSurveillanceDetails);
@@ -78,6 +76,27 @@ public class PatientService implements IPatientService {
 
         return savedFicheSurveillance;
     }
+
+    public Soin addSoin(Soin soin, String patientId) {
+        Patient patient = pr.findById(patientId)
+                .orElseThrow(() -> new RuntimeException("Patient not found"));
+        soin.setPatient(patient);
+        soin.setFillTime(LocalDateTime.now());
+        Soin savedSoin = sr.save(soin);
+        pr.save(patient);
+        return savedSoin;
+    }
+
+    public Kinesitherapie addSeanceKinesitherapie(Kinesitherapie k, String patientId) {
+        Patient patient = pr.findById(patientId)
+                .orElseThrow(() -> new RuntimeException("Patient not found"));
+        k.setPatient(patient);
+        k.setFillTime(LocalDateTime.now());
+        Kinesitherapie savedKinesitherapie = kr.save(k);
+        pr.save(patient);
+        return savedKinesitherapie;
+    }
+
 
     }
 

@@ -1,13 +1,16 @@
 package com.example.santevistabackendpfe.controllers;
 
 import com.example.santevistabackendpfe.presistence.entity.FicheSurveillance;
+import com.example.santevistabackendpfe.presistence.entity.Soin;
 import com.example.santevistabackendpfe.presistence.repository.FicheSurveillanceRepository;
 import com.example.santevistabackendpfe.presistence.repository.PatientRepository;
 import com.example.santevistabackendpfe.services.FicheService;
 import com.example.santevistabackendpfe.services.Interfaces.IFichePrescriptionService;
 import com.example.santevistabackendpfe.services.Interfaces.IFicheService;
 import com.example.santevistabackendpfe.services.Interfaces.IPatientService;
+import com.example.santevistabackendpfe.services.Interfaces.ISoinService;
 import com.example.santevistabackendpfe.services.PatientService;
+import com.example.santevistabackendpfe.services.SoinService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,11 +34,15 @@ public class InfirmierSoignantController {
     @Autowired
     IFicheService ifs;
     @Autowired
+    ISoinService iss;
+    @Autowired
     IFichePrescriptionService ifps;
     @Autowired
     private PatientService patientService;
     @Autowired
     FicheService ficheService;
+    @Autowired
+    SoinService soinService;
 
 
     //*********************** methode de la fiche *************************************
@@ -73,4 +80,59 @@ public class InfirmierSoignantController {
             return ResponseEntity.status(500).body(null);
         }
     }
-}
+
+    //******************************* methode de soin ***************************************
+    @GetMapping("/GetAllSoins")
+    public List<Soin> getallSoins() {
+        return iss.getAllSoins();
+    }
+
+    @GetMapping("/getSoin/{id}")
+
+    public Soin getSoinparid(@PathVariable String id) {
+
+        return iss.getSoinById(id);
+    }
+
+
+    @PostMapping("/{patientId}/addSoin")
+    public ResponseEntity<Soin> addSoin(
+            @PathVariable String patientId,
+            @RequestBody Soin soin
+    ) {
+        try {
+            // Récupérer le nom de l'utilisateur connecté
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String filledByName = authentication.getName();
+            // Ajouter le nom de user au soin
+            soin.setFilledByName(filledByName);
+            Soin createdSoin = patientService.addSoin(soin, patientId);
+            return ResponseEntity.ok(createdSoin);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(404).body(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+        @PutMapping("/modifSoin/{id}")
+        public ResponseEntity<?> modifierSoin(@RequestBody Soin s, @PathVariable String id) {
+            try {
+                Soin updatedSoin = soinService.updateSoin(s, id);
+                return ResponseEntity.ok(updatedSoin);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.status(500).body("erreur de modification");
+            }
+        }
+    @DeleteMapping("/deleteSoin/{id}")
+    public String deleteSoin(@PathVariable String id) {
+        iss.deleteSoinById(id);
+        return "le soin est supprimé avec succes";
+
+    }
+    }
+
+
