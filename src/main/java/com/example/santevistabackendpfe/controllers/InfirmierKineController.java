@@ -28,8 +28,7 @@ import java.util.List;
 @PreAuthorize("hasAuthority('INFIRMIERKINE')")
 public class InfirmierKineController {
 
-    private final PatientRepository patientRepository;
-    private final FicheSurveillanceRepository ficheSurveillanceRepository;
+
     @Autowired
     IPatientService ips;
     @Autowired

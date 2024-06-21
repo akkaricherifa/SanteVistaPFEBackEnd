@@ -18,7 +18,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.ResponseEntity.ok;
 import static org.springframework.web.servlet.function.ServerResponse.status;
@@ -159,4 +163,22 @@ public class SecretaireController {
     }
 
 
-}
+    //******************************** liste d'admission chaque jour ****************
+    @GetMapping("/addedOn/{date}")
+    public ResponseEntity<List<Patient>> getPatientsAddedOn(@PathVariable String date) {
+        try {
+            LocalDate localDate = LocalDate.parse(date);
+            List<Patient> patients = patientService.getPatientsAddedOn(localDate);
+            return ResponseEntity.ok(patients);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+    }
+
+
+
+
+
+

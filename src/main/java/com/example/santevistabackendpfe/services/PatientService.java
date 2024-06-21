@@ -4,9 +4,12 @@ import com.example.santevistabackendpfe.presistence.entity.*;
 import com.example.santevistabackendpfe.presistence.repository.*;
 import com.example.santevistabackendpfe.services.Interfaces.IPatientService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +27,7 @@ public class PatientService implements IPatientService {
     KinesitherapieRepository kr;
     @Autowired
     UserRepository ur;
+    private static final Logger logger = LoggerFactory.getLogger(PatientService.class);
 
     @Override
     public List<Patient> getAllPatients() {
@@ -32,6 +36,7 @@ public class PatientService implements IPatientService {
 
     @Override
     public Patient addPatient(Patient p) {
+        p.setDateAdded(LocalDate.now());
         return pr.save(p);
     }
 
@@ -95,6 +100,14 @@ public class PatientService implements IPatientService {
         Kinesitherapie savedKinesitherapie = kr.save(k);
         pr.save(patient);
         return savedKinesitherapie;
+    }
+
+
+    //********************************************** liste d'admission par jour *************************
+
+    public List<Patient> getPatientsAddedOn(LocalDate date) {
+        List<Patient> patients = pr.findByDateAdded(date);
+        return patients;
     }
 
 
