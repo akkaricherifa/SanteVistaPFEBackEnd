@@ -107,14 +107,13 @@ public class PatientService implements IPatientService {
         return savedKinesitherapie;
     }
 
-
-    //********************************************** liste d'admission par jour des patients *************************
+//********************************************** liste d'admission par jour des patients *************************
 
     public List<Patient> getPatientsAddedOn(LocalDate date) {
         List<Patient> patients = pr.findByDateAdded(date);
         return patients;
     }
-//*************************** liste des patients morts chaque semaine ************************************
+//******************************************** liste des patients morts chaque semaine ************************************
 public List<Patient> getAllDeceasedPatients() {
     return pr.findByDateDeDeceIsNotNull();
 }
