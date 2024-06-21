@@ -175,6 +175,19 @@ public class SecretaireController {
             return ResponseEntity.status(500).body(null);
         }
     }
+
+
+    //********************************* liste des patients morts ********************************
+    @GetMapping("/deceased")
+    public ResponseEntity<List<Patient>> getAllDeceasedPatients() {
+        try {
+            List<Patient> patients = patientService.getAllDeceasedPatients();
+            return ResponseEntity.ok(patients);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(null);
+        }
+    }
     }
 
 

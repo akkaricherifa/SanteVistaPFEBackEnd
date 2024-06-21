@@ -15,6 +15,8 @@ public interface PatientRepository extends MongoRepository<Patient, String> {
 
     List<Patient> findByDateAdded(LocalDate date);
 
+    List<Patient> findByDateDeDeceIsNotNull();
+
 
 
 

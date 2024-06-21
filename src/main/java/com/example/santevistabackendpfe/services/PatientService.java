@@ -11,8 +11,12 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.WeekFields;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -58,6 +62,7 @@ public class PatientService implements IPatientService {
             existingPatient.setNumTel(p.getNumTel());
             existingPatient.setAge(p.getAge());
             existingPatient.setMaladie(p.getMaladie());
+            existingPatient.setDateDeDece(p.getDateDeDece());
             return pr.save(existingPatient);
         } else {
             throw new RuntimeException("Patient not found with id " + id);
@@ -103,13 +108,16 @@ public class PatientService implements IPatientService {
     }
 
 
-    //********************************************** liste d'admission par jour *************************
+    //********************************************** liste d'admission par jour des patients *************************
 
     public List<Patient> getPatientsAddedOn(LocalDate date) {
         List<Patient> patients = pr.findByDateAdded(date);
         return patients;
     }
-
+//*************************** liste des patients morts chaque semaine ************************************
+public List<Patient> getAllDeceasedPatients() {
+    return pr.findByDateDeDeceIsNotNull();
+}
 
     }
 

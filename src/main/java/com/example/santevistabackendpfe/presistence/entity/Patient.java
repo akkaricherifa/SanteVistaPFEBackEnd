@@ -25,6 +25,8 @@ public class Patient {
     private String maladie;
 
     private LocalDate dateAdded;
+    private LocalDate dateDeDece;
+
 
 
 
