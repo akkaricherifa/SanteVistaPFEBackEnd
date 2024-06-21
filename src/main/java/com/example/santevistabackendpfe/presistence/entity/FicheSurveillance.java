@@ -5,6 +5,9 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Document(collection = "FicheSurveillances")
@@ -128,6 +131,14 @@ public class FicheSurveillance {
     private String propofol;
     private String cisatracurium;
     private String medications;
+
+
+
+    private boolean isValidated;
+    private String filledById;
+    private LocalDateTime fillTime;
+    private String observations;
+    private String filledByName;
 
     @DBRef
     private Patient patient;

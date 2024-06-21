@@ -7,6 +7,7 @@ import com.example.santevistabackendpfe.services.Interfaces.IFicheService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -163,12 +164,27 @@ public class FicheService implements IFicheService {
         }
     }
 
+    @Override
+    public FicheSurveillance fillFicheSurveillance(FicheSurveillance fiche) {
+        fiche.setFillTime(LocalDateTime.now());
+        fiche.setValidated(false);
+        return fr.save(fiche);
+    }
 
 
     @Override
-    public FicheSurveillance validateFicheSurveillance(FicheSurveillance f, String id) {
-        return null;
+    public FicheSurveillance validateFicheSurveillance(String id) {
+        Optional<FicheSurveillance> optionalFiche = fr.findById(id);
+        if (optionalFiche.isPresent()) {
+            FicheSurveillance fiche = optionalFiche.get();
+            fiche.setValidated(true);
+            return fr.save(fiche);
+        } else {
+            throw new RuntimeException("FicheSurveillance not found");
+        }
     }
+
+
 
     @Override
     public void deleteFicheSurveillanceById(String id) {

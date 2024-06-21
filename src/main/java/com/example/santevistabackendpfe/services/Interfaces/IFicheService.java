@@ -10,7 +10,7 @@ public interface IFicheService {
     public FicheSurveillance getFicheSurveillanceById(String id);
     public FicheSurveillance updateFicheSurveillance(FicheSurveillance f, String id);
 
-    public FicheSurveillance validateFicheSurveillance (FicheSurveillance f, String id);
     void deleteFicheSurveillanceById(String id);
-
+    FicheSurveillance fillFicheSurveillance(FicheSurveillance fiche);
+    FicheSurveillance validateFicheSurveillance(String id);
 }

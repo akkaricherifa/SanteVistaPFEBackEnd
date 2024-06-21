@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -123,4 +125,40 @@ public class MedecinSeniorController {
 
     }
 
+
+    @PostMapping("/{id}/validate")
+    public ResponseEntity<FicheSurveillance> validateFicheSurveillance(@PathVariable String id) {
+        FicheSurveillance validatedFiche = ficheService.validateFicheSurveillance(id);
+        return ResponseEntity.ok(validatedFiche);
+    }
+
+
+    @PostMapping("/remplir")
+    public ResponseEntity<FicheSurveillance> fillFicheSurveillance(@RequestBody FicheSurveillance fiche) {
+        FicheSurveillance savedFiche = ficheService.fillFicheSurveillance(fiche);
+        return ResponseEntity.ok(savedFiche);
+    }
+
+    @PostMapping("/{patientId}/addFicheSurveillance")
+    public ResponseEntity<FicheSurveillance> addFicheSurveillance(
+            @PathVariable String patientId,
+            @RequestBody FicheSurveillance ficheSurveillanceDetails
+           ) {
+        try {
+            // Récupérer le nom de l'utilisateur connecté
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String filledByName = authentication.getName();
+
+            // Ajouter le nom de user à la fiche de surveillance
+            ficheSurveillanceDetails.setFilledByName(filledByName);
+            FicheSurveillance createdFicheSurveillance = patientService.addFicheSurveillance(ficheSurveillanceDetails, patientId);
+            return ResponseEntity.ok(createdFicheSurveillance);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(404).body(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(null);
+        }
+    }
 }

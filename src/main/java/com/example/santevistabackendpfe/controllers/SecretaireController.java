@@ -2,6 +2,7 @@ package com.example.santevistabackendpfe.controllers;
 import com.example.santevistabackendpfe.presistence.entity.FichePerscription;
 import com.example.santevistabackendpfe.presistence.entity.FicheSurveillance;
 import com.example.santevistabackendpfe.presistence.entity.Patient;
+import com.example.santevistabackendpfe.presistence.entity.UserEntity;
 import com.example.santevistabackendpfe.presistence.repository.FicheSurveillanceRepository;
 import com.example.santevistabackendpfe.presistence.repository.PatientRepository;
 import com.example.santevistabackendpfe.services.FicheService;
@@ -14,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -90,8 +93,18 @@ public class SecretaireController {
     @PostMapping("/{patientId}/addFicheSurveillance")
     public ResponseEntity<FicheSurveillance> addFicheSurveillance(
             @PathVariable String patientId,
-            @RequestBody FicheSurveillance ficheSurveillanceDetails) {
+            @RequestBody FicheSurveillance ficheSurveillanceDetails
+           ) {
         try {
+            // Récupérer le nom de l'utilisateur connecté
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            //UserEntity userDetails = (UserEntity) authentication.getPrincipal();
+            //String filledByName = userDetails.getUsername();
+            String filledByName = authentication.getName();
+
+            // Ajouter le nom du médecin à la fiche de surveillance
+            ficheSurveillanceDetails.setFilledByName(filledByName);
+
             FicheSurveillance createdFicheSurveillance = patientService.addFicheSurveillance(ficheSurveillanceDetails, patientId);
             return ResponseEntity.ok(createdFicheSurveillance);
         } catch (RuntimeException e) {

@@ -2,13 +2,16 @@ package com.example.santevistabackendpfe.services;
 
 import com.example.santevistabackendpfe.presistence.entity.FicheSurveillance;
 import com.example.santevistabackendpfe.presistence.entity.Patient;
+import com.example.santevistabackendpfe.presistence.entity.UserEntity;
 import com.example.santevistabackendpfe.presistence.repository.FicheSurveillanceRepository;
 import com.example.santevistabackendpfe.presistence.repository.PatientRepository;
+import com.example.santevistabackendpfe.presistence.repository.UserRepository;
 import com.example.santevistabackendpfe.services.Interfaces.IPatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +22,8 @@ public class PatientService implements IPatientService {
     PatientRepository pr;
     @Autowired
     FicheSurveillanceRepository fr;
+    @Autowired
+    UserRepository ur;
 
     @Override
     public List<Patient> getAllPatients() {
@@ -59,14 +64,16 @@ public class PatientService implements IPatientService {
 
         }
 
+
     public FicheSurveillance addFicheSurveillance(FicheSurveillance ficheSurveillanceDetails, String patientId) {
 
         Patient patient = pr.findById(patientId)
                 .orElseThrow(() -> new RuntimeException("Patient not found"));
 
-
         ficheSurveillanceDetails.setPatient(patient);
+        ficheSurveillanceDetails.setFillTime(LocalDateTime.now());
         FicheSurveillance savedFicheSurveillance = fr.save(ficheSurveillanceDetails);
+
         pr.save(patient);
 
         return savedFicheSurveillance;
