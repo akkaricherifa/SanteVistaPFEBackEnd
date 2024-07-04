@@ -18,8 +18,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -57,6 +61,72 @@ public class SecretaireController {
         } catch (Exception e) {
             e.printStackTrace();
             return "erreur ajout";
+        }
+    }
+
+    @PostMapping("/addPatientsFromCsv")
+    public String addPatientsFromCsv(@RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return "Le fichier est vide";
+        }
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+            String line;
+            // Skip the header line if your CSV has a header
+            reader.readLine();
+            while ((line = reader.readLine()) != null) {
+                // Ignore empty lines
+                if (line.trim().isEmpty()) {
+                    continue;
+                }
+
+                String[] data = line.split(",");
+                // Trim whitespace from each data element
+                for (int i = 0; i < data.length; i++) {
+                    data[i] = data[i].trim();
+                }
+
+                if (data.length != 9) { // Assurez-vous que le nombre de colonnes est correct
+                    return "Le fichier CSV ne contient pas le nombre correct de colonnes";
+                }
+
+                Patient patient = new Patient();
+                // L'ID sera généré automatiquement par MongoDB
+                patient.setNom(data[0]);
+                patient.setPrenom(data[1]);
+                patient.setAdresseVille(data[2]);
+                patient.setAge(data[3]);
+                patient.setSexe(data[4]);
+
+                try {
+                    patient.setNumTel(Integer.parseInt(data[5]));
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                    return "Erreur de format de numéro de téléphone";
+                }
+
+                patient.setMaladie(data[6]);
+
+                try {
+                    patient.setDateAdded(LocalDate.parse(data[7]));
+                } catch (DateTimeParseException e) {
+                    e.printStackTrace();
+                    return "Erreur de format pour dateAdded";
+                }
+
+                try {
+                    patient.setDateDeDece(LocalDate.parse(data[8]));
+                } catch (DateTimeParseException e) {
+                    e.printStackTrace();
+                    return "Erreur de format pour dateDeDece";
+                }
+
+                patientService.addPatient(patient);
+            }
+            return "Patients ajoutés avec succès";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Erreur lors de l'ajout des patients";
         }
     }
 
