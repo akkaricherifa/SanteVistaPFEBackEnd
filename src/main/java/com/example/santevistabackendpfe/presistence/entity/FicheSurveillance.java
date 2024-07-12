@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Getter
 @Setter
@@ -139,6 +140,8 @@ public class FicheSurveillance {
     private LocalDateTime fillTime;
     private String observations;
     private String filledByName;
+    private LocalTime time;
+    private double value;
 
     @DBRef
     private Patient patient;

@@ -12,6 +12,7 @@ import com.example.santevistabackendpfe.services.Interfaces.IPatientService;
 import com.example.santevistabackendpfe.services.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.batch.BatchProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,9 +24,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.ResponseEntity.ok;
@@ -39,6 +41,8 @@ public class SecretaireController {
 
     private final PatientRepository patientRepository;
     private final FicheSurveillanceRepository ficheSurveillanceRepository;
+
+
     @Autowired
     IPatientService ips;
 
@@ -167,19 +171,27 @@ public class SecretaireController {
     @PostMapping("/{patientId}/addFicheSurveillance")
     public ResponseEntity<FicheSurveillance> addFicheSurveillance(
             @PathVariable String patientId,
-            @RequestBody FicheSurveillance ficheSurveillanceDetails
-           ) {
+            @RequestBody FicheSurveillance ficheSurveillanceDetails) {
         try {
             // Récupérer le nom de l'utilisateur connecté
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            //UserEntity userDetails = (UserEntity) authentication.getPrincipal();
-            //String filledByName = userDetails.getUsername();
             String filledByName = authentication.getName();
 
-            // Ajouter le nom du médecin à la fiche de surveillance
-            ficheSurveillanceDetails.setFilledByName(filledByName);
+            // Récupérer le patient à partir de l'ID
+            Optional<Patient> optionalPatient = patientRepository.findById(patientId);
+            if (!optionalPatient.isPresent()) {
+                throw new RuntimeException("Patient not found with id: " + patientId);
+            }
 
-            FicheSurveillance createdFicheSurveillance = patientService.addFicheSurveillance(ficheSurveillanceDetails, patientId);
+            Patient patient = optionalPatient.get();
+
+            // Assigner le patient et le nom de remplissage à la fiche de surveillance
+            ficheSurveillanceDetails.setPatient(patient);
+            ficheSurveillanceDetails.setFilledByName(filledByName);
+            // Assigner la date et l'heure actuelle à time
+            ficheSurveillanceDetails.setTime(LocalTime.now()); // Exemple: Utilisation de l'heure actuelle
+            // Appeler le service pour ajouter la fiche de surveillance
+            FicheSurveillance createdFicheSurveillance = ficheService.createFicheSurveillance(ficheSurveillanceDetails);
             return ResponseEntity.ok(createdFicheSurveillance);
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -189,7 +201,6 @@ public class SecretaireController {
             return ResponseEntity.status(500).body(null);
         }
     }
-
 
     @PostMapping("/addFichePer")
     public ResponseEntity<FichePerscription> addFichePer(@RequestBody FichePerscription f) {
@@ -233,6 +244,10 @@ public class SecretaireController {
     }
 
 
+
+
+
+
     //******************************** liste d'admission chaque jour ****************
     @GetMapping("/addedOn/{date}")
     public ResponseEntity<List<Patient>> getPatientsAddedOn(@PathVariable String date) {
@@ -258,6 +273,8 @@ public class SecretaireController {
             return ResponseEntity.status(500).body(null);
         }
     }
+
+
     }
 
 

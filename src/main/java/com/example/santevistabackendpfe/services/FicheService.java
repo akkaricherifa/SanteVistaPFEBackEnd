@@ -1,6 +1,7 @@
 package com.example.santevistabackendpfe.services;
 
 import com.example.santevistabackendpfe.presistence.entity.FicheSurveillance;
+import com.example.santevistabackendpfe.presistence.entity.Patient;
 import com.example.santevistabackendpfe.presistence.repository.FicheSurveillanceRepository;
 import com.example.santevistabackendpfe.presistence.repository.PatientRepository;
 import com.example.santevistabackendpfe.services.Interfaces.IFicheService;
@@ -8,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -184,12 +187,45 @@ public class FicheService implements IFicheService {
         }
     }
 
-
-
     @Override
     public void deleteFicheSurveillanceById(String id) {
         fr.deleteById(id);
 
     }
+
+
+
+    public Optional<FicheSurveillance> getSheetForCurrentHour(String patientId, LocalTime currentTime) {
+        LocalDateTime startOfHour = LocalDateTime.now().withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime endOfHour = startOfHour.plusHours(1);
+        return fr.findByPatientIdAndTimeBetween(patientId, startOfHour, endOfHour).stream().findFirst();
+    }
+
+
+    public FicheSurveillance createFicheSurveillance(FicheSurveillance ficheSurveillance) {
+        // Assurez-vous que la fiche de surveillance n'a pas déjà d'ID défini
+        if (ficheSurveillance.getId() != null) {
+            throw new IllegalArgumentException("La nouvelle fiche de surveillance ne doit pas avoir d'ID défini.");
+        }
+
+        // Assurez-vous que le remplissage par nom est défini
+        if (ficheSurveillance.getFilledByName() == null || ficheSurveillance.getFilledByName().isEmpty()) {
+            throw new IllegalArgumentException("Le nom du remplisseur doit être spécifié.");
+        }
+
+        // Assurez-vous que le patient est défini
+        if (ficheSurveillance.getPatient() == null || ficheSurveillance.getPatient().getId() == null) {
+            throw new IllegalArgumentException("Le patient associé à la fiche de surveillance doit être spécifié.");
+        }
+
+        // Définissez la date et l'heure de remplissage actuelles si elles ne sont pas définies
+        if (ficheSurveillance.getFillTime() == null) {
+            ficheSurveillance.setFillTime(LocalDateTime.now());
+        }
+
+        // Enregistrez la nouvelle fiche de surveillance dans la base de données
+        return fr.save(ficheSurveillance);
+    }
+
 
 }

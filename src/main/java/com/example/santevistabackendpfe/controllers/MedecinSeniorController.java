@@ -6,6 +6,7 @@ import com.example.santevistabackendpfe.services.FicheService;
 import com.example.santevistabackendpfe.services.Interfaces.IFicheService;
 import com.example.santevistabackendpfe.services.Interfaces.IPatientService;
 import com.example.santevistabackendpfe.services.PatientService;
+import com.example.santevistabackendpfe.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,8 +32,23 @@ public class MedecinSeniorController {
     private PatientService patientService;
     @Autowired
     private FicheService ficheService;
+    @Autowired
+    private UserService userService;
 
 //*********************************** get listes de personnels de santé ************************************
+
+
+    @CrossOrigin(origins = "http://localhost:4200")
+    @GetMapping("/user/{id}")
+    public ResponseEntity<UserEntity> getUser(@PathVariable String id) {
+        Optional<UserEntity> medecin = userService.getUser(id);
+        if (medecin.isPresent()) {
+            return ResponseEntity.ok(medecin.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @GetMapping("/MedecinsSeniors")
     public ResponseEntity<List<UserEntity>> users() {
         List<UserEntity> users = userRepository.findAll();
