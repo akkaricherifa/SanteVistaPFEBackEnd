@@ -243,6 +243,34 @@ public class SecretaireController {
 
     }
 
+    @GetMapping("/{patientId}/fiches")
+    public ResponseEntity<List<FicheSurveillance>> getFichesByPatientId(@PathVariable String patientId) {
+        try {
+            List<FicheSurveillance> fiches = ficheService.getFichesByPatientId(patientId);
+            return ResponseEntity.ok(fiches);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(404).body(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+
+    @GetMapping("/{patientId}/fiches/{date}")
+    public ResponseEntity<List<FicheSurveillance>> getFichesByPatientIdAndDate(@PathVariable String patientId, @PathVariable String date) {
+        try {
+            LocalDate localDate = LocalDate.parse(date);
+            List<FicheSurveillance> fiches = ficheService.getFichesByPatientIdAndDate(patientId, localDate);
+            return ResponseEntity.ok(fiches);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(404).body(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(null);
+        }
+    }
 
 
 

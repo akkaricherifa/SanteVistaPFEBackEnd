@@ -8,9 +8,8 @@ import com.example.santevistabackendpfe.services.Interfaces.IFicheService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -195,13 +194,6 @@ public class FicheService implements IFicheService {
 
 
 
-    public Optional<FicheSurveillance> getSheetForCurrentHour(String patientId, LocalTime currentTime) {
-        LocalDateTime startOfHour = LocalDateTime.now().withMinute(0).withSecond(0).withNano(0);
-        LocalDateTime endOfHour = startOfHour.plusHours(1);
-        return fr.findByPatientIdAndTimeBetween(patientId, startOfHour, endOfHour).stream().findFirst();
-    }
-
-
     public FicheSurveillance createFicheSurveillance(FicheSurveillance ficheSurveillance) {
         // Assurez-vous que la fiche de surveillance n'a pas déjà d'ID défini
         if (ficheSurveillance.getId() != null) {
@@ -225,6 +217,27 @@ public class FicheService implements IFicheService {
 
         // Enregistrez la nouvelle fiche de surveillance dans la base de données
         return fr.save(ficheSurveillance);
+    }
+
+
+
+    public List<FicheSurveillance> getFichesByPatientIdAndDate(String patientId, LocalDate date) {
+        Optional<Patient> optionalPatient = patientRepository.findById(patientId);
+        if (!optionalPatient.isPresent()) {
+            throw new RuntimeException("Patient not found with id: " + patientId);
+        }
+
+        Patient patient = optionalPatient.get();
+        return fr.findByPatientAndFillTimeBetween(patient, date.atStartOfDay(), date.plusDays(1).atStartOfDay());
+    }
+    public List<FicheSurveillance> getFichesByPatientId(String patientId) {
+        Optional<Patient> optionalPatient = patientRepository.findById(patientId);
+        if (!optionalPatient.isPresent()) {
+            throw new RuntimeException("Patient not found with id: " + patientId);
+        }
+
+        Patient patient = optionalPatient.get();
+        return fr.findByPatient(patient);
     }
 
 
